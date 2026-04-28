@@ -60,8 +60,8 @@ jobs:
           conan config install https://github.com/libhal/conan-config2.git
           conan hal setup
 
-      - name: 🔨 Build for cortex-m3 to cache compiler
-        run: conan create . -s:h build_type=Release -s:h os=baremetal -s:h arch=cortex-m3 --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
+      - name: 🔨 Build for cortex-m33f to cache compiler
+        run: conan create . -s:h build_type=Release -s:h os=baremetal -s:h arch=cortex-m33f --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
 
       - name: 📦 Create tarball of conan packages
         run: tar -czf conan-packages.tar.gz -C ~/.conan2 p
@@ -74,7 +74,7 @@ jobs:
           retention-days: 1
 
   # Build jobs for each architecture
-  build_cortex_m3:
+  build_cortex_m33f:
     needs: setup_compiler_cache
     runs-on: ubuntu-24.04
     env:
@@ -109,69 +109,21 @@ jobs:
       - name: 📦 Extract conan packages tarball
         run: tar -xzf conan-packages.tar.gz -C ~/.conan2
 
-      - name: 📦 Create `Debug` package for cortex-m3
-        run: conan create . -s:h build_type=Debug -s:h os=baremetal -s:h arch=cortex-m3 --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
+      - name: 📦 Create `Debug` package for cortex-m33f
+        run: conan create . -s:h build_type=Debug -s:h os=baremetal -s:h arch=cortex-m33f \
+             --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing \
+             -o:h flash_clkdiv=2 -o:h rp_revision=a2 -o:h flash_size="(16 * 1024 * 1024)" -o:h use_w25q_flash=True
 
-      - name: 📦 Create `MinSizeRel` package for cortex-m3
-        run: conan create . -s:h build_type=MinSizeRel -s:h os=baremetal -s:h arch=cortex-m3 --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
+      - name: 📦 Create `MinSizeRel` package for cortex-m33f
+        run: conan create . -s:h build_type=MinSizeRel -s:h os=baremetal -s:h arch=cortex-m33f \
+             --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing \
+             -o:h flash_clkdiv=2 -o:h rp_revision=a2 -o:h flash_size="(16 * 1024 * 1024)" -o:h use_w25q_flash=True
 
-      - name: 📦 Create `Release` package for cortex-m3
-        run: conan create . -s:h build_type=Release -s:h os=baremetal -s:h arch=cortex-m3 --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
 
-      - name: 📡 Sign into JFrog Artifactory
-        if: ${{ inputs.version != 'latest' }}
-        env:
-          PASSWORD: ${{ secrets.JFROG_LIBHAL_TRUNK_ID_TOKEN }}
-          JFROG_USER: ${{ secrets.JFROG_LIBHAL_TRUNK_ID_TOKEN_USER }}
-        run: conan remote login -p $PASSWORD libhal $JFROG_USER
-
-      - name: 🆙 Upload package version ${{ inputs.version }} to conan repo
-        if: ${{ inputs.version != 'latest' }}
-        run: conan upload "libhal-arm-mcu/${{ inputs.version }}" --confirm -r=libhal
-
-  build_cortex_m4:
-    needs: setup_compiler_cache
-    runs-on: ubuntu-24.04
-    env:
-      VERBOSE: 1
-    steps:
-      - uses: actions/checkout@v4.1.1
-        if: ${{ inputs.version != 'latest' }}
-        with:
-          submodules: true
-          repository: ${{ inputs.repo }}
-          ref: ${{ inputs.version }}
-
-      - uses: actions/checkout@v4.1.1
-        if: ${{ inputs.version == 'latest' }}
-        with:
-          submodules: true
-          repository: ${{ inputs.repo }}
-
-      - name: 🔍 setup libhal
-        run: |
-          pipx install conan>=${{ inputs.conan_version }}
-          conan --version
-          conan config install https://github.com/libhal/conan-config2.git
-          conan hal setup
-
-      - name: 📥 Download conan package cache
-        uses: actions/download-artifact@v4
-        with:
-          name: conan-packages-${{ inputs.upload_suffix }}
-          path: .
-
-      - name: 📦 Extract conan packages tarball
-        run: tar -xzf conan-packages.tar.gz -C ~/.conan2
-
-      - name: 📦 Create `Debug` package for cortex-m4
-        run: conan create . -s:h build_type=Debug -s:h os=baremetal -s:h arch=cortex-m4 --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
-
-      - name: 📦 Create `MinSizeRel` package for cortex-m4
-        run: conan create . -s:h build_type=MinSizeRel -s:h os=baremetal -s:h arch=cortex-m4 --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
-
-      - name: 📦 Create `Release` package for cortex-m4
-        run: conan create . -s:h build_type=Release -s:h os=baremetal -s:h arch=cortex-m4 --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
+      - name: 📦 Create `Release` package for cortex-m33f
+        run: conan create . -s:h build_type=Release -s:h os=baremetal -s:h arch=cortex-m33f \
+             --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing \
+             -o:h flash_clkdiv=2 -o:h rp_revision=a2 -o:h flash_size="(16 * 1024 * 1024)" -o:h use_w25q_flash=True
 
       - name: 📡 Sign into JFrog Artifactory
         if: ${{ inputs.version != 'latest' }}
@@ -182,59 +134,4 @@ jobs:
 
       - name: 🆙 Upload package version ${{ inputs.version }} to conan repo
         if: ${{ inputs.version != 'latest' }}
-        run: conan upload "libhal-arm-mcu/${{ inputs.version }}" --confirm -r=libhal
-
-  build_cortex_m4f:
-    needs: setup_compiler_cache
-    runs-on: ubuntu-24.04
-    env:
-      VERBOSE: 1
-    steps:
-      - uses: actions/checkout@v4.1.1
-        if: ${{ inputs.version != 'latest' }}
-        with:
-          submodules: true
-          repository: ${{ inputs.repo }}
-          ref: ${{ inputs.version }}
-
-      - uses: actions/checkout@v4.1.1
-        if: ${{ inputs.version == 'latest' }}
-        with:
-          submodules: true
-          repository: ${{ inputs.repo }}
-
-      - name: 🔍 setup libhal
-        run: |
-          pipx install conan>=${{ inputs.conan_version }}
-          conan --version
-          conan config install https://github.com/libhal/conan-config2.git
-          conan hal setup
-
-      - name: 📥 Download conan package cache
-        uses: actions/download-artifact@v4
-        with:
-          name: conan-packages-${{ inputs.upload_suffix }}
-          path: .
-
-      - name: 📦 Extract conan packages tarball
-        run: tar -xzf conan-packages.tar.gz -C ~/.conan2
-
-      - name: 📦 Create `Debug` package for cortex-m4f
-        run: conan create . -s:h build_type=Debug -s:h os=baremetal -s:h arch=cortex-m4f --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
-
-      - name: 📦 Create `MinSizeRel` package for cortex-m4f
-        run: conan create . -s:h build_type=MinSizeRel -s:h os=baremetal -s:h arch=cortex-m4f --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
-
-      - name: 📦 Create `Release` package for cortex-m4f
-        run: conan create . -s:h build_type=Release -s:h os=baremetal -s:h arch=cortex-m4f --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing
-
-      - name: 📡 Sign into JFrog Artifactory
-        if: ${{ inputs.version != 'latest' }}
-        env:
-          PASSWORD: ${{ secrets.JFROG_LIBHAL_TRUNK_ID_TOKEN }}
-          JFROG_USER: ${{ secrets.JFROG_LIBHAL_TRUNK_ID_TOKEN_USER }}
-        run: conan remote login -p $PASSWORD libhal $JFROG_USER
-
-      - name: 🆙 Upload package version ${{ inputs.version }} to conan repo
-        if: ${{ inputs.version != 'latest' }}
-        run: conan upload "libhal-arm-mcu/${{ inputs.version }}" --confirm -r=libhal
+        run: conan upload "libhal-picosdk/${{ inputs.version }}" --confirm -r=libhal

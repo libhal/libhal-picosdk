@@ -50,7 +50,7 @@ class libhal_picosdk_conan(ConanFile):
         "use_libhal_exceptions": [True, False],
         "use_picolibc": [True, False],
         "variant": [None, "ANY"],
-        "board": ["ANY"],
+        "board": [None, "ANY"],
         "replace_std_terminate": [True, False],
         "use_semihosting": [True, False],
         "flash_size": ["ANY"],
@@ -60,6 +60,7 @@ class libhal_picosdk_conan(ConanFile):
     }
     default_options = {
         "platform": "ANY",
+        "board": None,
         "use_libhal_exceptions": False,
         "use_picolibc": True,
         "replace_std_terminate": True,
@@ -113,7 +114,7 @@ class libhal_picosdk_conan(ConanFile):
         tc = CMakeToolchain(self)
         tc.cache_variables["DO_NOT_BUILD_BOOT_HAL"] = True
         tc.preprocessor_definitions["PICO_STDIO_SHORT_CIRCUIT_CLIB_FUNCS"] = "0"
-        tc.cache_variables["PICO_BOARD"] = str(self.options.board)
+        tc.cache_variables["PICO_BOARD"] = self.getboard()
         if (
             self.options.flash_size
             or self.options.flash_clkdiv
@@ -134,9 +135,12 @@ class libhal_picosdk_conan(ConanFile):
         cmake = CMakeDeps(self)
         cmake.generate()
 
-    def validate(self):
+    def getboard(self):
         if not self.options.board:
-            raise ConanInvalidConfiguration("RP board not specified")
+            return "libhal_picosdk"
+        return self.options.board.value
+
+    def validate(self):
         if (
             self.options.flash_size
             or self.options.flash_clkdiv
@@ -165,7 +169,7 @@ class libhal_picosdk_conan(ConanFile):
         ):
             copy(
                 self,
-                f"{self.options.board.value}.h",
+                f"{self.getboard()}.h",
                 dst=Path(self.package_folder).joinpath("include", "picosdk-board-defs"),
                 src=self.build_folder,
             )
@@ -183,10 +187,11 @@ class libhal_picosdk_conan(ConanFile):
         self.buildenv_info.define("LIBHAL_PLATFORM", PLATFORM)
         self.buildenv_info.define("LIBHAL_PLATFORM_LIBRARY", "picosdk")
         if str(self.options.platform).startswith("rp2"):
-            self.buildenv_info.define(
-                "PICO_BOARD_HEADER_DIRS",
-                str(Path(self.package_folder, "include", "picosdk-board-defs")),
-            )
+            if self.options.flash_size:
+                self.buildenv_info.define(
+                    "PICO_BOARD_HEADER_DIRS",
+                    str(Path(self.package_folder, "include", "picosdk-board-defs")),
+                )
             defines = []
             if self.options.variant:
                 defines.append(
@@ -266,7 +271,7 @@ class libhal_picosdk_conan(ConanFile):
 
     def generate_rp_header(self):
         platform = str(self.options.platform.value)
-        pico_board = self.options.board.value
+        pico_board = self.getboard()
         a2 = "1" if self.options.rp_revision.value == "a2" else "0"
         if platform.startswith("rp235"):
             if self.options.variant == "rp2350a":
