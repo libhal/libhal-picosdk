@@ -131,24 +131,24 @@ void uart::driver_configure(settings const& options)
 
 serial::write_t uart::driver_write(std::span<byte const> in)
 {
-  auto uart = get_uart(m_bus);
+  auto inst = get_uart(m_bus);
   size_t i = 0;
   for (; i < in.size_bytes(); ++i) {
-    if (!uart_is_writable(uart))
+    if (!uart_is_writable(inst))
       break;
-    uart_get_hw(uart)->dr = in[i];
+    uart_get_hw(inst)->dr = in[i];
   }
   return { in.subspan(0, i) };
 }
 
 serial::read_t uart::driver_read(std::span<byte> out)
 {
-  auto uart = get_uart(m_bus);
+  auto inst = get_uart(m_bus);
   size_t i = 0;
   for (; i < out.size_bytes(); ++i) {
-    while (!uart_is_readable(uart))
+    while (!uart_is_readable(inst))
       break;
-    out[i] = (uint8_t)uart_get_hw(uart)->dr;
+    out[i] = (uint8_t)uart_get_hw(inst)->dr;
   }
   return { .data = out.subspan(0, i),
            .available = uart_is_readable(get_uart(m_bus)),
