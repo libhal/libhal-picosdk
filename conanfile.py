@@ -172,7 +172,7 @@ class libhal_picosdk_conan(ConanFile):
         super().package()
 
     def package_info(self):
-        self.cpp_info.libs = ["libhal-arm-mcu"]
+        self.cpp_info.libs = ["libhal-picosdk"]
         self.cpp_info.set_property("cmake_target_name", "libhal::picosdk")
         self.cpp_info.set_property(
             "cmake_target_aliases",
@@ -249,29 +249,8 @@ class libhal_picosdk_conan(ConanFile):
                     ]
                 )
 
-        if self.options.use_default_linker_script:
-            LINKER_SCRIPTS_PATH = Path(self.package_folder) / "linker_scripts"
-            # If the platform matches the linker script, just use that linker
-            # script
-            self.cpp_info.exelinkflags.append("-L" + str(LINKER_SCRIPTS_PATH))
-
-            FULL_LINKER_PATH: Path = LINKER_SCRIPTS_PATH / (platform + ".ld")
-            # if the file exists, then we should use it as the linker
-            if FULL_LINKER_PATH.exists():
-                self.output.info(f"linker file '{FULL_LINKER_PATH}' found!")
-                self.cpp_info.exelinkflags.append("-T" + platform + ".ld")
-            else:
-                # if there is no match, then the linker script could be a
-                # pattern based on the name of the platform
-                self.append_linker_using_platform(platform)
-
-            if self.settings.compiler == "gcc":
-                self.cpp_info.exelinkflags.append("-Tpicolibc_gcc.ld")
-            if self.settings.compiler == "clang":
-                self.cpp_info.exelinkflags.append("-Tpicolibc_llvm.ld")
-
         package_folder = Path(self.package_folder)
-        LIB_PATH = package_folder / "lib" / "liblibhal-arm-mcu.a"
+        LIB_PATH = package_folder / "lib" / "liblibhal-picosdk.a"
         self.cpp_info.exelinkflags.extend(
             [
                 # Ensure that all symbols are added to the linker's symbol table

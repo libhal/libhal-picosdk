@@ -23,6 +23,4 @@ class TestPackageConan(ConanFile):
     python_requires_extend = "libhal-bootstrap.library_test_package"
 
     def requirements(self):
-        self.requires(self.tested_reference_str, options={
-            'use_default_linker_script': False
-        })
+        self.requires(self.tested_reference_str)

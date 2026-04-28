@@ -24,7 +24,7 @@ project(libhal-picosdk LANGUAGES CXX C ASM)
 pico_sdk_init()
 
 libhal_test_and_make_library(
-  LIBRARY_NAME libhal-arm-mcu
+  LIBRARY_NAME libhal-picosdk
 
   SOURCES
   src/gpio.cpp
