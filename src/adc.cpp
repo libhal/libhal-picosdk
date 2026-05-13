@@ -151,7 +151,7 @@ adc16_pack::read_session adc16_pack::async()
   channel_config_set_write_increment(&cfg, true);
   channel_config_set_dreq(&cfg, DREQ_ADC);
   dma_channel_set_config(read_dma, &cfg, false);
-  return { static_cast<u8>(read_dma), m_read_size, m_first_pin };
+  return { static_cast<u8>(read_dma), m_first_pin };
 }
 adc16_pack::read_session::~read_session()
 {
@@ -179,7 +179,7 @@ adc16_pack::read_session::promise adc16_pack::read_session::read(
   adc_select_input(m_first_pin);
   adc_hw->fcs |= bool_to_bit(true) << ADC_FCS_EN_LSB;
   adc_run(true);
-  return promise{ m_dma, m_first_pin };
+  return promise{ m_dma };
 }
 
 microseconds adc16_pack::read_session::promise::poll()
