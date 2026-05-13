@@ -273,8 +273,8 @@ class libhal_picosdk_conan(ConanFile):
         platform = str(self.options.platform.value)
         pico_board = self.getboard()
         a2 = "1" if self.options.rp_revision.value == "a2" else "0"
+        r2350a = "0"
         if platform.startswith("rp235"):
-            r2350a = "0"
             if self.options.variant == "rp2350a":
                 r2350a = "1"
         file = f"""#ifndef _{pico_board}_h
