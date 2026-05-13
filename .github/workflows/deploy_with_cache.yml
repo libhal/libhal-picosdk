@@ -65,7 +65,7 @@ jobs:
             conan create . -s:h build_type=Debug -s:h os=baremetal -s:h arch=cortex-m33f \
              --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing \
              -o:h *:flash_clkdiv=2 -o:h *:rp_revision=a2 -o:h *:flash_size="(16 * 1024 * 1024)" -o:h *:use_w25q_flash=True \
-             -o:h *:platform=rp2350-arm-s
+             -o:h *:platform=rp2350-arm-s -o:h *:variant=rp2350b
 
       - name: 📦 Create tarball of conan packages
         run: tar -czf conan-packages.tar.gz -C ~/.conan2 p
@@ -118,21 +118,21 @@ jobs:
             conan create . -s:h build_type=Debug -s:h os=baremetal -s:h arch=cortex-m33f \
              --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing \
              -o:h *:flash_clkdiv=2 -o:h *:rp_revision=a2 -o:h *:flash_size="(16 * 1024 * 1024)" -o:h *:use_w25q_flash=True \
-             -o:h *:platform=rp2350-arm-s
+             -o:h *:platform=rp2350-arm-s -o:h *:variant=rp2350b
 
       - name: 📦 Create `MinSizeRel` package for cortex-m33f
         run: |
             conan create . -s:h build_type=MinSizeRel -s:h os=baremetal -s:h arch=cortex-m33f \
              --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing \
              -o:h *:flash_clkdiv=2 -o:h *:rp_revision=a2 -o:h *:flash_size="(16 * 1024 * 1024)" -o:h *:use_w25q_flash=True \
-             -o:h *:platform=rp2350-arm-s
+             -o:h *:platform=rp2350-arm-s -o:h *:variant=rp2350b
 
       - name: 📦 Create `Release` package for cortex-m33f
         run: |
             conan create . -s:h build_type=Release -s:h os=baremetal -s:h arch=cortex-m33f \
              --version=${{ inputs.version }} -pr:h ${{ inputs.compiler_profile }} --build=missing \
              -o:h *:flash_clkdiv=2 -o:h *:rp_revision=a2 -o:h *:flash_size="(16 * 1024 * 1024)" -o:h *:use_w25q_flash=True \
-             -o:h *:platform=rp2350-arm-s
+             -o:h *:platform=rp2350-arm-s -o:h *:variant=rp2350b
 
       - name: 📡 Sign into JFrog Artifactory
         if: ${{ inputs.version != 'latest' }}
