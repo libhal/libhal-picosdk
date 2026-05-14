@@ -36,6 +36,7 @@ libhal_test_and_make_library(
   src/time.cpp
   src/dwt_counter.cpp
   src/terminate_handler.cpp
+  src/interrupt.cpp
 
   TEST_SOURCES
   ${test_sources}
