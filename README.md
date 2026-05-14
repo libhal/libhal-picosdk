@@ -1,32 +1,14 @@
-# libhal-arm-mcu
+# libhal-picosdk
 
-[![✅ Demos Build](https://github.com/libhal/libhal-arm-mcu/actions/workflows/demos_test.yml/badge.svg)](https://github.com/libhal/libhal-arm-mcu/actions/workflows/demos_test.yml)
-[![✅ Library Builds](https://github.com/libhal/libhal-arm-mcu/actions/workflows/library_test.yml/badge.svg)](https://github.com/libhal/libhal-arm-mcu/actions/workflows/library_test.yml)
-[![GitHub stars](https://img.shields.io/github/stars/libhal/libhal-armcortex.svg)](https://github.com/libhal/libhal-armcortex/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/libhal/libhal-armcortex.svg)](https://github.com/libhal/libhal-armcortex/network)
-[![GitHub issues](https://img.shields.io/github/issues/libhal/libhal-armcortex.svg)](https://github.com/libhal/libhal-armcortex/issues)
-
-This repo contains libhal compatible libraries for numerous ARM Cortex-M
-processor microcontrollers (MCUs). This is a platform library supporting
-generic ARM processor APIs and peripheral drivers from many different
-microcontrollers.
-
-> [!NOTE]
-> CI is failing due to a memory leak detected via ASAN when executing the unit tests on Linux.
-> Everything passes without an error or leak detected on MacOS builds.
-> This is the current cause of the CI to failure. Otherwise the rest of CI is passing.
+This repo is a libhal wrapper for the Raspberry Pi Pico C/C++ SDK. See <https://libhal.github.io/>
+for information about libhal or <https://github.com/raspberrypi/pico-sdk> for information about
+the underlying library.
 
 ## 📚 Software APIs & Usage
 
 To learn about the available drivers and APIs see the headers
-[`include/libhal-arm-mcu`](https://github.com/libhal/libhal-arm-mcu/tree/main/include/libhal-arm-mcu)
+[`include/libhal-picosdk`](https://github.com/libhal/libhal-picosdk/tree/main/include/libhal-picosdk)
 directory.
-
-To see how each driver is used see the
-[`demos/`](https://github.com/libhal/libhal-arm-mcu/tree/main/demos) directory.
-
-Fully rendered Doxygen APIs will be provided when
-[issue#37](https://github.com/libhal/libhal-arm-mcu/issues/37) is closed.
 
 ## 🧰 Setup
 
@@ -53,84 +35,25 @@ old files with the latest versions.
 Now that you have the profiles installed, you can build demos and libraries for
 ARM microcontrollers.
 
-## 🏗️ Building Demo Applications
-
-To build demos, start at the root of the repo and execute the following command:
-
-```bash
-conan build demos -pr hal/mcu/lpc4078 -s hal/tc/arm-gcc
-```
-
-This will build the demos for the `lpc4078` microcontroller in `MinSizeRel`
-mode. Replace `lpc4078` with any of the other complete profiles found in the
-`profiles/hal/mcu`. You must also supply the compiler you plan to use.
-`hal/tc/arm-gcc` is the currently support ARM GCC compiler for libhal which is
-set to `14.3`
-
-Add the flag `-s build_type=Debug` to build in debug mode:
-
-```bash
-conan build demos -pr hal/mcu/lpc4078 -s hal/tc/arm-gcc -s build_type=Debug
-```
-
-Build type `Debug`, `MinSizeRel`, and `Release` are all available.
-
 ## 💾 Flashing/Programming
 
-There are a few ways to flash an LPC40 series MCU. The recommended methods are
-via USB or using a debugger JTAG/SWD.
+It is possible to flash RP-series chips via the file manager GUI, or from the
+command line using picosdk's tools.
 
-### Flashing NXP MCUs
+### Programming via Mass Storage Interface
 
-[`nxpprog`](https://github.com/libhal/nxpprog) is a script for programming and
-flashing LPC40 series chips over serial/UART. Using it will require a USB to
-serial/uart adaptor.
+When the Pico microcontrollers enter boot mode, they appear as a mass storage device
+on USB. By copying a uf2 firmware file into the directory of the mass storage interface,
+it is possible to flash the microcontroller with no external tools.
 
-See the README on [`nxpprog`](https://github.com/libhal/nxpprog), for details on
-how to use NXPPROG.
+### Programming using picotool
 
-To install `nxpprog`:
+By adding `picotool` as a dependency, it is possible to flash the RP chips. First, add it
+as a `tool_requires` dependency in your project. Then, convert the `.elf` firmware to `.uf2`
+via the `pico_add_extra_oututs()` CMake function. 
+Then run `source build/rp2350-arm-s/BUILDTYPEHERE/generators/conanbuild.sh`. This will add
+picotool to your path. Then run `picotool load FIRMWAREFILE.uf2` to upload.
 
-```bash
-pipx install nxpprog
-```
-
-To flash command is:
-
-```bash
-nxpprog --control --binary demos/build/lpc4078/MinSizeRel/blinker.elf.bin --device /dev/tty.usbserial-10
-```
-
-- Replace `demos/build/lpc4078/MinSizeRel/blinker.elf.bin` with the path to the
-  binary you'd like to flash.
-- Replace `/dev/tty.usbserial-10` with the path to your serial port on your
-  machine.
-
-### Flashing STM32 Processors
-
-[`stm32loader`](https://pypi.org/project/stm32loader/) is a script for
-programming and flashing STM32 series chips over serial/UART. Using it will
-require a USB to serial/uart adaptor.
-
-For more information, please refer to the README of
-[`stm32loader`](https://pypi.org/project/stm32loader/).
-
-To install stm32loader:
-
-```bash
-pipx install stm32loader
-```
-
-To flash command is:
-
-```bash
-stm32loader -p /dev/tty.usbserial-10 -e -w -v demos/build/stm32f103c8/MinSizeRel/blinker.elf.bin
-```
-
-- Replace `demos/build/stm32f103c8/MinSizeRel/blinker.elf.bin` with the path to
-  the binary you'd like to flash.
-- Replace `/dev/tty.usbserial-10` with the path to your serial port on your
-  machine.
 
 ### Using JTAG/SWD over PyOCD
 
@@ -138,8 +61,8 @@ stm32loader -p /dev/tty.usbserial-10 -e -w -v demos/build/stm32f103c8/MinSizeRel
 processor devices over JTAG and SWD.
 
 This will require a JTAG or SWD debugger. The recommended debugger for the
-LPC40 series of devices is the STLink v2 (cheap variants can be found on
-Amazon).
+RP-series chips is the Raspberry Pi Debug Adapter, although any debugger will
+suffice.
 
 See [PyOCD Installation Page](https://pyocd.io/docs/installing) for installation
 details.
@@ -147,8 +70,7 @@ details.
 For reference the flashing command is:
 
 ```bash
-pyocd flash --target lpc4088 demos/build/lpc4078/MinSizeRel/blinker.elf.bin
-pyocd flash --target stm32f103rc demos/build/stm32f103c8/MinSizeRel/blinker.elf.bin
+pyocd flash --target rp2350 demos/build/lpc4078/MinSizeRel/blinker.elf.bin
 ```
 
 Note that the targets for your exact part may not exist in `pyocd`. Because of
@@ -156,7 +78,7 @@ this, it means that the bounds of the memory may not fit your device. It is up
 to you to make sure you do not flash a binary larger than what can fit on your
 device.
 
-## 📦 Adding `libhal-arm-mcu` to your project
+## 📦 Adding `libhal-picosdk` to your project
 
 This section assumes you are using the
 [`libhal-starter`](https://github.com/libhal/libhal-starter)
@@ -174,7 +96,7 @@ Add the following to your `requirements()` method:
 
 ```python
     def requirements(self):
-        self.requires("libhal-arm-mcu/[^1.0.0]")
+        self.requires("libhal-picosdk/[^1.0.0]")
 ```
 
 The version number can be changed to whatever is appropriate for your
@@ -186,7 +108,7 @@ platform library. No change needed.
 To perform a test build simple run `conan build .` as is done above with the
 desired target platform profile.
 
-## ❌ Using `libhal-arm-mcu` in your library
+## ❌ Using `libhal-picosdk` in your library
 
 This library is a platform library and as such should only be depended upon by
 applications. Platform libraries do not require ABI stability and thus do not
@@ -244,79 +166,8 @@ The patch number will increment if:
 2. Any changes occur within the `/include/libhal-arm-mcu/experimental`
    directory.
 
-For now, you cannot expect ABI or API stability with anything in the
-`/include/libhal-arm-mcu/experimental` directory.
-
-## 🏁 Startup & Initialization
-
-Startup is managed by the [`picolibc`](https://keithp.com/picolibc/) runtime.
-In terms of startup `picolibc` has to manage doing two things. For one, it must
-construct a minimal interrupt vector table with two entries. The 1st entry is
-the address of the top of the stack. The 2nd entry is the address of the
-function that will be executed on reset. `picolibc` sets this to its own
-`_start` function. `_start` does the following:
-
-1. Sets the main stack registers
-2. Write the `.data` section from read-only memory
-3. Set the `.bss` section to all zeros
-4. Enable FPU if present for the core architecture
-5. Calls all globally constructed C++ objects
-6. Calls `main()`
-
-If the `.data` or `.bss` sections must initialized manually, there are functions
-provided:
-
-```C++
-#include <libhal-armcortex/startup.hpp>
-
-hal::cortex_m::initialize_data_section();
-hal::cortex_m::initialize_bss_section();
-hal::cortex_m::initialize_floating_point_unit();
-```
-
-### 🏎️ Setting Clock Speed
-
-To setting the CPU clock speed to the maximum of 120MHz, include the line below,
-with the rest of the includes:
-
-```C++
-#include <libhal-arm-mcu/lpc40/clock.hpp>
-#include <libhal-arm-mcu/stm32f1/clock.hpp>
-#include <libhal-arm-mcu/stm32f4/clock.hpp>
-// etc..
-#include <libhal-arm-mcu/rp2040/clock.hpp>
-```
-
-Next run the following command but replace `12.0_MHz` with the crystal
-oscillator frequency connected to the microcontroller. This command REQUIRES
-that there be a crystal oscillator attached to the microcontroller. Calling
-this without the oscillator will cause the device to freeze as it will attempt
-to use a clock that does not exist.
-
-```C++
-hal::lpc40::maximum(12.0_MHz);
-hal::stm32f1::maximum(8.0_MHz);
-hal::stm32f4::maximum(10.0_MHz);
-// etc...
-hal::rp2040::maximum(16.0_MHz);
-```
-
-To set the clock rate to the max speed using the internal oscillator:
-
-```C++
-hal::lpc40::maximum_speed_using_internal_oscillator();
-hal::stm32f1::maximum_speed_using_internal_oscillator();
-hal::stm32f4::maximum_speed_using_internal_oscillator();
-// etc...
-hal::rp2040::maximum_speed_using_internal_oscillator();
-```
-
-These APIs may not always exist for all systems, so be sure to check if the API
-exists.
-
-#### 🕰️ Detailed Clock Tree Control
-
-Coming soon...
+For now, you cannot expect ABI or API stability with anything in an `experimental`
+namespace.
 
 ## 🔎 On Chip Software Debugging
 
@@ -325,7 +176,7 @@ Coming soon...
 In one terminal:
 
 ```bash
-pyocd gdbserver --semihost -Osemihost_console_type=True --persist --target=lpc4088
+pyocd gdbserver --semihost -Osemihost_console_type=True --persist --target=rp2350
 ```
 
 In another terminal:
@@ -393,11 +244,3 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for details.
 
 Apache 2.0; see [`LICENSE`](LICENSE) for details.
 
-## Source of initial files put into this library
-
-The original files came from the soon to be archived repos:
-
-- [`libhal/libhal-lpc40`](https://github.com/libhal/libhal-lpc40)
-- [`libhal/libhal-stm32f1`](https://github.com/libhal/libhal-stm32f1)
-- [`libhal/libhal-stm32f4`](https://github.com/libhal/libhal-stm32f4)
-- [`libhal/libhal-armcortex`](https://github.com/libhal/libhal-armcortex)

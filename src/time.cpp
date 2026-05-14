@@ -1,4 +1,4 @@
-// Copyright 2024 - 2025 Khalil Estell and the libhal contributors
+// Copyright 2026 - Shin Umeda & LibHAL contributors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <exception>
+#include <libhal/units.hpp>
 
-#include <libhal-picosdk/dwt_counter.hpp>
+#include <hardware/platform_defs.h>
+#include <hardware/timer.h>
+#include <pico/time.h>
 
-bool volatile run = false;
+#include "libhal-picosdk/time.hpp"
 
-int main()
+namespace hal::rp::inline v4 {
+
+hertz clock::driver_frequency()
 {
-  std::uint64_t uptime = 0;
-
-  if (run) {
-    try {
-      hal::cortex_m::dwt_counter counter(1'000'000.0f);
-      uptime = counter.uptime();
-    } catch (...) {
-      std::terminate();
-    }
-  }
-
-  return static_cast<int>(uptime);
+  return 1'000'000;
 }
+
+u64 clock::driver_uptime()
+{
+  return time_us_64();
+}
+
+hertz core_clock()
+{
+  return SYS_CLK_HZ;
+}
+
+void sleep(std::chrono::duration<u64, std::micro> time) noexcept
+{
+  sleep_us(time.count());
+}
+
+}  // namespace hal::rp::inline v4
