@@ -1,2 +1,0 @@
-{% set platform = "stm32f103rf" %}
-{% include "stm32f1" %}

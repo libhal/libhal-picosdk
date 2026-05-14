@@ -14,7 +14,7 @@
 
 #include <exception>
 
-#include <libhal-arm-mcu/dwt_counter.hpp>
+#include <libhal-picosdk/dwt_counter.hpp>
 
 bool volatile run = false;
 

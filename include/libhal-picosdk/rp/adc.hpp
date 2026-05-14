@@ -153,23 +153,21 @@ struct adc16_pack::read_session
 
   private:
     friend read_session;
-    promise(u8 dma, u8 first_pin)  // NOLINT
+    promise(u8 dma)
       : m_dma(dma)
-      , m_first_pin(first_pin)
     {
     }
-    u8 m_dma, m_first_pin;
+    u8 m_dma;
   };
 
 private:
   friend adc16_pack;
-  read_session(u8 dma, u8 read_size, u8 first_pin)  // NOLINT
+  read_session(u8 dma, u8 first_pin)  // NOLINT
     : m_dma(dma)
-    , m_read_size(read_size)
     , m_first_pin(first_pin)
   {
   }
-  u8 m_dma, m_read_size, m_first_pin;
+  u8 m_dma, m_first_pin;
 };
 
 }  // namespace nonstandard

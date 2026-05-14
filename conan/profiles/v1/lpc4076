@@ -1,3 +1,0 @@
-{% set platform = "lpc4076" %}
-{% set arch = "cortex-m4f" %}
-{% include "lpc40" %}

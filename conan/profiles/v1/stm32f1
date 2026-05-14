@@ -1,8 +1,0 @@
-[settings]
-build_type=MinSizeRel
-os=baremetal
-arch=cortex-m3
-libc=custom
-
-[options]
-*:platform={{ platform }}
