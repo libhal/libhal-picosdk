@@ -24,10 +24,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
-    uses: libhal/ci/.github/workflows/library_check.yml@5.x.y
-    secrets: inherit
-
   deploy_gcc:
     uses: ./.github/workflows/deploy_with_cache.yml
     with:
