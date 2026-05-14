@@ -19,7 +19,7 @@
 #include <hardware/i2c.h>
 #include <pico/error.h>
 
-#include "libhal-arm-mcu/rp/i2c.hpp"
+#include "libhal-picosdk/i2c.hpp"
 
 // pico macros interfere with ours
 #undef i2c0

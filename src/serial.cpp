@@ -22,7 +22,7 @@
 #include <pico/stdio.h>
 #include <pico/time.h>
 
-#include "libhal-arm-mcu/rp/serial.hpp"
+#include "libhal-picosdk/serial.hpp"
 
 namespace {
 auto get_uart(hal::u8 bus)

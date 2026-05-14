@@ -29,10 +29,10 @@
 #include <pico/sync.h>
 #include <pico/time.h>
 
-#include "libhal-arm-mcu/rp/input_pin.hpp"
-#include "libhal-arm-mcu/rp/interrupt_pin.hpp"
-#include "libhal-arm-mcu/rp/output_pin.hpp"
-#include "libhal-arm-mcu/rp/rp.hpp"
+#include "libhal-picosdk/input_pin.hpp"
+#include "libhal-picosdk/interrupt_pin.hpp"
+#include "libhal-picosdk/output_pin.hpp"
+#include "libhal-picosdk/rp.hpp"
 
 namespace {
 struct interrupt_manager

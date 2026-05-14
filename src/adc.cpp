@@ -23,9 +23,9 @@
 #include <hardware/gpio.h>
 #include <hardware/platform_defs.h>
 
-#include "libhal-arm-mcu/rp/adc.hpp"
-#include "libhal-arm-mcu/rp/rp.hpp"
-#include "libhal-arm-mcu/rp/time.hpp"
+#include "libhal-picosdk/adc.hpp"
+#include "libhal-picosdk/rp.hpp"
+#include "libhal-picosdk/time.hpp"
 
 namespace hal::rp {
 

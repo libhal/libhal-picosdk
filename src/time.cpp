@@ -18,7 +18,7 @@
 #include <hardware/timer.h>
 #include <pico/time.h>
 
-#include "libhal-arm-mcu/rp/time.hpp"
+#include "libhal-picosdk/time.hpp"
 
 namespace hal::rp::inline v4 {
 

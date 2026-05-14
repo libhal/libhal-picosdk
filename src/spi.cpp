@@ -21,7 +21,7 @@
 #include <hardware/spi.h>
 #include <pico/time.h>
 
-#include "libhal-arm-mcu/rp/spi.hpp"
+#include "libhal-picosdk/spi.hpp"
 
 namespace {
 auto get_bus(hal::u8 busnum)

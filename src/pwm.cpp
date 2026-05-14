@@ -21,7 +21,7 @@
 #include <hardware/gpio.h>
 #include <hardware/pwm.h>
 
-#include "libhal-arm-mcu/rp/pwm.hpp"
+#include "libhal-picosdk/pwm.hpp"
 
 namespace hal::rp {
 inline namespace v4 {
