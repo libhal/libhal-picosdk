@@ -1,27 +1,14 @@
 # libhal-picosdk
 
-[![✅ Demos Build](https://github.com/libhal/libhal-arm-mcu/actions/workflows/demos_test.yml/badge.svg)](https://github.com/libhal/libhal-arm-mcu/actions/workflows/demos_test.yml)
-[![✅ Library Builds](https://github.com/libhal/libhal-arm-mcu/actions/workflows/library_test.yml/badge.svg)](https://github.com/libhal/libhal-arm-mcu/actions/workflows/library_test.yml)
-[![GitHub stars](https://img.shields.io/github/stars/libhal/libhal-armcortex.svg)](https://github.com/libhal/libhal-armcortex/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/libhal/libhal-armcortex.svg)](https://github.com/libhal/libhal-armcortex/network)
-[![GitHub issues](https://img.shields.io/github/issues/libhal/libhal-armcortex.svg)](https://github.com/libhal/libhal-armcortex/issues)
-
-This repo contains libhal compatible libraries for numerous ARM Cortex-M
-processor microcontrollers (MCUs). This is a platform library supporting
-generic ARM processor APIs and peripheral drivers from many different
-microcontrollers.
+This repo is a libhal wrapper for the Raspberry Pi Pico C/C++ SDK. See <https://libhal.github.io/>
+for information about libhal or <https://github.com/raspberrypi/pico-sdk> for information about
+the underlying library.
 
 ## 📚 Software APIs & Usage
 
 To learn about the available drivers and APIs see the headers
-[`include/libhal-arm-mcu`](https://github.com/libhal/libhal-arm-mcu/tree/main/include/libhal-arm-mcu)
+[`include/libhal-picosdk`](https://github.com/libhal/libhal-picosdk/tree/main/include/libhal-picosdk)
 directory.
-
-To see how each driver is used see the
-[`demos/`](https://github.com/libhal/libhal-arm-mcu/tree/main/demos) directory.
-
-Fully rendered Doxygen APIs will be provided when
-[issue#37](https://github.com/libhal/libhal-arm-mcu/issues/37) is closed.
 
 ## 🧰 Setup
 
@@ -47,28 +34,6 @@ old files with the latest versions.
 
 Now that you have the profiles installed, you can build demos and libraries for
 ARM microcontrollers.
-
-## 🏗️ Building Demo Applications
-
-To build demos, start at the root of the repo and execute the following command:
-
-```bash
-conan build demos -pr hal/mcu/lpc4078 -s hal/tc/arm-gcc
-```
-
-This will build the demos for the `lpc4078` microcontroller in `MinSizeRel`
-mode. Replace `lpc4078` with any of the other complete profiles found in the
-`profiles/hal/mcu`. You must also supply the compiler you plan to use.
-`hal/tc/arm-gcc` is the currently support ARM GCC compiler for libhal which is
-set to `14.3`
-
-Add the flag `-s build_type=Debug` to build in debug mode:
-
-```bash
-conan build demos -pr hal/mcu/lpc4078 -s hal/tc/arm-gcc -s build_type=Debug
-```
-
-Build type `Debug`, `MinSizeRel`, and `Release` are all available.
 
 ## 💾 Flashing/Programming
 
@@ -113,7 +78,7 @@ this, it means that the bounds of the memory may not fit your device. It is up
 to you to make sure you do not flash a binary larger than what can fit on your
 device.
 
-## 📦 Adding `libhal-arm-mcu` to your project
+## 📦 Adding `libhal-picosdk` to your project
 
 This section assumes you are using the
 [`libhal-starter`](https://github.com/libhal/libhal-starter)
@@ -131,7 +96,7 @@ Add the following to your `requirements()` method:
 
 ```python
     def requirements(self):
-        self.requires("libhal-arm-mcu/[^1.0.0]")
+        self.requires("libhal-picosdk/[^1.0.0]")
 ```
 
 The version number can be changed to whatever is appropriate for your
@@ -201,8 +166,8 @@ The patch number will increment if:
 2. Any changes occur within the `/include/libhal-arm-mcu/experimental`
    directory.
 
-For now, you cannot expect ABI or API stability with anything in the
-`/include/libhal-arm-mcu/experimental` directory.
+For now, you cannot expect ABI or API stability with anything in an `experimental`
+namespace.
 
 ## 🔎 On Chip Software Debugging
 
