@@ -1,18 +1,18 @@
-libhal-arm-mcu API documentation
-=================================
+libhal-picosdk API documentation
+================================
 
 .. image:: _static/logo.png
   :width: 200
   :align: center
   :alt: libhal logo
 
-**Welcome to libhal ARM MCU API documentation**
+**Welcome to libhal-picosdk API documentation**
 
 Here you will find an organized list of the peripheral drivers for MCUs with
 ARM Cortex M processors embedded within them.
 
 .. toctree::
-  :caption: libhal-arm-mcu Docs
+  :caption: libhal-picosdk Docs
   :maxdepth: 5
 
   Libhal Cortex M <cortex_m/index>
