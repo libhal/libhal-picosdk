@@ -63,52 +63,6 @@ on the repo for copyright and/or license reasons, then a markdown file with a
 link to the datasheet (and potentially mirrors of it) is an acceptable
 alternative.
 
-<!--
-
-### `demos/`
-
-This directory contains demonstration applications showing how to use the device
-library. It includes:
-
-- `resource_list.hpp`: A header file defining the resource list required for
-  the demo applications.
-- `main.cpp`: The main entry point for the demo applications.
-- `platforms/lpc4074.cpp` and `platforms/lpc4078.cpp`: Platform-specific
-  implementations for the demo applications.
-- `CMakeLists.txt`: Build file using the
-  [`libhal_build_demos`](https://github.com/libhal/libhal-cmake-util?tab=readme-ov-file#libhal_test_and_make_library)
-  function from
-  [`libhal-cmake-util`](https://github.com/libhal/libhal-cmake-util).
-
-### `include/libhal-arm-mcu/`
-
-This directory contains the header files for the device library. This contains
-the public APIs. Try and keep the public APIs as minimal as possible as
-removing or changing something from this area will result in either an API or
-ABI break.
-
-### `src/`
-
-This directory contains the source files for the device library. Implementation
-details for the device library and any other private support libraries are
-written here.
-
-### `test_package/`
-
-This directory contains a test package for the Conan recipe. This tests that
-the Conan recipe is working correctly. The test package doesn't have to do
-anything fancy. It just exists to ensure that the device library can be a
-dependency of an application and successfully build. Make sure to at least
-include one file from the public includes of this repo in order to determine
-that your headers work. If possible, create an object or run a function in the
-code to ensure that your APIs and types can be used in the package.
-
-### `tests/`
-
-This directory contains tests for the device library. It will always contain a `main.test.cpp` which is the entry point for the tests.
-
--->
-
 ## How to Deploy Binaries for a Release
 
 1. On Github, click on the "Releases" button

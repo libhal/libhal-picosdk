@@ -50,7 +50,7 @@ it is possible to flash the microcontroller with no external tools.
 
 By adding `picotool` as a dependency, it is possible to flash the RP chips. First, add it
 as a `tool_requires` dependency in your project. Then, convert the `.elf` firmware to `.uf2`
-via the `pico_add_extra_oututs()` CMake function. 
+via the `pico_add_extra_oututs()` CMake function.
 Then run `source build/rp2350-arm-s/BUILDTYPEHERE/generators/conanbuild.sh`. This will add
 picotool to your path. Then run `picotool load FIRMWAREFILE.uf2` to upload.
 
@@ -240,7 +240,31 @@ conan build . -pr stm32f103c8 -pr arm-gcc-12.3
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for details.
 
+## Why this isn't apart of `libhal-arm-mcu`
+
+Unlike the other MCUs in `libhal-arm-mcu` which directly rely on common APIs
+from the `hal::cortex_m` namespace and have a common structure in terms of
+their linker scripts and package options, `libhal-picosdk` requires a number of
+additional options to specify the board type and chip variant that do not
+exactly fit the model of `libhal-arm-mcu`. Thus they were separated from each
+other. The alternative is to force two mostly independent libraries into the
+same `conanfile.py` and `CMakeLists.txt`, which will make for a mess trying to
+coordinate each.
+
+## Why this is separate from libhal-arm-mcu
+
+Most MCUs in libhal-arm-mcu share a consistent structure regarding linker
+scripts and package options, relying primarily on common APIs from the
+`hal::cortex_m` namespace. In contrast, libhal-picosdk leverages the C APIs
+provided by the PicoSDK, which are not used by any other MCU in the
+libhal-arm-mcu ecosystem.
+
+Because libhal-picosdk requires additional configuration for board types and
+chip variants that do not fit the libhal-arm-mcu model, the two libraries have
+been kept separate. To avoid the complexity of managing two functionally
+independent libraries within a single conanfile.py and CMakeLists.txt, they are
+maintained in their own respective repositories.
+
 ## License
 
 Apache 2.0; see [`LICENSE`](LICENSE) for details.
-
