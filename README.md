@@ -10,6 +10,32 @@ To learn about the available drivers and APIs see the headers
 [`include/libhal-picosdk`](https://github.com/libhal/libhal-picosdk/tree/main/include/libhal-picosdk)
 directory.
 
+## API Documentation
+
+The generated API documentation is published by
+[the API docs workflow](.github/workflows/api.yml) to the central libhal API
+site under the `libhal-picosdk` package name:
+<https://libhal.github.io/api/libhal-picosdk/main/>.
+
+The workflow delegates to `libhal/ci` and runs the Doxygen + Sphinx build with:
+
+```bash
+conan hal docs --doc_version <version> docs
+```
+
+For a local documentation check without publishing, install Doxygen and the
+Python docs requirements, then run:
+
+```bash
+cd docs
+export LIBHAL_API_VERSION=local
+export LIBHAL_LOCAL_BUILD=1
+doxygen doxygen.conf
+python -m sphinx -b html . build/html
+```
+
+The local HTML output is written to `docs/build/html/index.html`.
+
 ## 🧰 Setup
 
 To get started with libhal, follow the
