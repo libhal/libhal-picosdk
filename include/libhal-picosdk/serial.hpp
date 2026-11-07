@@ -56,11 +56,13 @@ struct uart final : public hal::serial
        pin_param auto tx,
        pin_param auto rx,
        settings const& options = {})
-    : uart(bus(), tx(), rx(), options)
+    : uart(bus(), tx(), rx(), (tx() % 4) >= 2, options)
   {
     static_assert(bus() == 0 || bus() == 1, "Invalid UART bus selected!");
-    static_assert(tx() % 4 == 0, "UART TX pin is invalid!");
-    static_assert(rx() % 4 == 1, "UART TX pin is invalid!");
+    if constexpr(internal::type == internal::processor_type::rp2040){
+      static_assert(tx() % 4 == 0, "UART TX pin is invalid!");
+      static_assert(rx() % 4 == 1, "UART TX pin is invalid!");
+    }
     static_assert(((tx() + 4) / 8) % 2 == bus(),
                   "UART TX pin and bus do not match!");
     static_assert(((rx() + 4) / 8) % 2 == bus(),
@@ -70,7 +72,7 @@ struct uart final : public hal::serial
   ~uart() override;
 
 private:
-  uart(u8 bus, u8 tx, u8 rx, settings const&);
+  uart(u8 bus, u8 tx, u8 rx, bool aux_pins, settings const&);
   void driver_configure(settings const&) override;
   write_t driver_write(std::span<byte const>) override;
   /**

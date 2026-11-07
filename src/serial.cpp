@@ -78,14 +78,22 @@ serial::read_t stdio_serial::driver_read(std::span<byte> output)
                  .capacity = 1 };
 }
 
-uart::uart(u8 bus, u8 tx, u8 rx, settings const& options)  // NOLINT
+uart::uart(u8 bus,
+           u8 tx,
+           u8 rx,
+           bool enable_aux,
+           settings const& options)  // NOLINT
   : m_tx(tx)
   , m_rx(rx)
   , m_bus(bus)
 {
 
-  auto func = (bus == 0) ? GPIO_FUNC_UART : GPIO_FUNC_UART_AUX;
-
+#if LIBHAL_PLATFORM_RP2040
+  auto func = GPIO_FUNC_UART;
+  (void) enable_aux;
+#else
+  auto func = enable_aux ? GPIO_FUNC_UART : GPIO_FUNC_UART_AUX;
+#endif
   driver_configure(options);
   gpio_set_function(tx, func);
   gpio_set_function(rx, func);
