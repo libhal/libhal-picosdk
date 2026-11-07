@@ -36,7 +36,7 @@ enum struct processor_type : uint8_t
 };
 
 #if defined(LIBHAL_PLATFORM_RP2040)
-constexpr inline processor_type type = type::rp2040;
+constexpr inline processor_type type = processor_type::rp2040;
 #elif defined(LIBHAL_PLATFORM_RP2350_ARM_S)
 constexpr inline processor_type type = processor_type::rp2350;
 #else

@@ -101,7 +101,7 @@ class libhal_picosdk_conan(ConanFile):
                 "prebuilt-picolibc/" + CV, options={"crt0": CRT0, "oslib": OSLIB}
             )
 
-        self.requires("picosdk/2.2.1-alpha")
+        self.requires("picosdk/2.2.1-alpha-1")
         self.tool_requires("pioasm/2.2.0")
 
 
