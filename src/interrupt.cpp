@@ -108,35 +108,35 @@ bool is_valid_irq_request(irq_t p_irq)
 void default_interrupt_handler()
 {
   while (true) {
-    continue;
+    // Empty: Clang deletes an infinite loop that holds only `continue;`
   }
 }
 
 void hard_fault_handler()
 {
   while (true) {
-    continue;
+    // Empty: Clang deletes an infinite loop that holds only `continue;`
   }
 }
 
 void memory_management_fault_handler()
 {
   while (true) {
-    continue;
+    // Empty: Clang deletes an infinite loop that holds only `continue;`
   }
 }
 
 void bus_fault_handler()
 {
   while (true) {
-    continue;
+    // Empty: Clang deletes an infinite loop that holds only `continue;`
   }
 }
 
 void usage_fault_handler()
 {
   while (true) {
-    continue;
+    // Empty: Clang deletes an infinite loop that holds only `continue;`
   }
 }
 

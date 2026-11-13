@@ -15,7 +15,7 @@
 namespace hal::cortex_m {
 std::terminate_handler default_handler = +[]() {  // NOLINT
   while (true) {
-    continue;
+    // Empty: Clang deletes an infinite loop that holds only `continue;`
   }
 };
 }  // namespace hal::cortex_m
@@ -40,7 +40,7 @@ extern "C"
   void __attribute__((weak)) _exit(int)
   {
     while (true) {
-      continue;
+      // Empty: Clang deletes an infinite loop that holds only `continue;`
     }
   }
 
