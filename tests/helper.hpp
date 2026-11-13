@@ -60,14 +60,14 @@ private:
 inline void fake_top_of_stack()
 {
   while (true) {
-    continue;
+    // Empty: Clang deletes an infinite loop that holds only `continue;`
   }
 }
 
 inline void fake_reset_handler()
 {
   while (true) {
-    continue;
+    // Empty: Clang deletes an infinite loop that holds only `continue;`
   }
 }
 
